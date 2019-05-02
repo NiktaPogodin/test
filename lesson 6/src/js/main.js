@@ -21,77 +21,80 @@ let startBtn = document.getElementById('start'),
 	monthValue = document.querySelector('.month-value'),
 	dayValue = document.querySelector('.day-value');
 
-let money, time;
-	
-	expensesBtn.disabled = true;
-	optionalExpensesBtn.disabled = true;
-	countBtn.disabled = true;
-	
+let money, time, sum, allSum;
+
+    /*    НАЧАТЬ РАСЧЕТ    */
+
 	startBtn.addEventListener('click', function() {
-	expensesBtn.disabled = false;
-	optionalExpensesBtn.disabled = false;
-	countBtn.disabled = false;
 		
 	time = prompt("Введите дату в формате YYYY-MM-DD", '');
 	money = +prompt("Ваш бюджет на месяц?", '');
 
-	while (isNaN(money) || money == '' || money == null) {
+	while (isNaN(money) || money == '' || money == null) { // Проверка на число
 		money = +prompt("Ваш бюджет?", '');
 	}
 
 	appData.budget = money;
 	appData.timeData = time;
-	budgetValue.textContent = money.toFixed();
+	budgetValue.textContent = money.toFixed(); // Бюджет на 1 день
 	yearValue.value = new Date(Date.parse(time)).getFullYear();
 	monthValue.value = new Date(Date.parse(time)).getMonth() + 1;
 	dayValue.value = new Date(Date.parse(time)).getDay();
 });
 
+	/*   ОБЯЗАТЕЛЬНЫЕ РАСХОДЫ    */
+
 expensesBtn.addEventListener("click", function(event) {	
 	let sum = 0;
 
 	for (let i = 0; i < expensesItem.length; i++) {
-		let a = expensesItem[i].value,
-			b = expensesItem[++i].value;
+		let a = expensesItem[i].value,  // Наименование 1
+			b = expensesItem[++i].value,// Цена 1
+			c = expensesItem[2].value,  // Наименование 2
+			d = expensesItem[3].value;  // Цена 2
 			
-		if (a == '' || b == '') {
+		if (a == '' || b == '' || c == ''|| d == '') { // Проверка на заполнение строк
 			event.disabled = true;
-			optionalExpensesBtn.disabled = true;
-			countBtn.disabled = true;
-		} else if ( (typeof(a))=== 'string' && (typeof(a)) != null && (typeof(b)) != null
-			&& a != '' && b != '' && a.length < 50) {
-			console.log("done");
-			appData.expenses[a] = b;
-			sum += +b;
-			expensesValue.textContent = sum;
-			optionalExpensesBtn.disabled = false;
-			countBtn.disabled = false;
-		} else {
+		} else if ((typeof(a))=== 'string' && (typeof(a)) != null && (typeof(b)) != null
+			&& a != '' && b != '' && a.length < 50) { // Проверка на строку
+			console.log('Done');
+			appData.expenses[a] = b; // Запись в expenses в формате [..] = ..
+			sum += +b; // Цена записывается в сумму
+			allSum = sum; // Результ. помещяем в allSum, чтобы вывести числом в Бюджете на 1 день
+			expensesValue.textContent = sum; // Записываем в обязательные расходы
+		} else if (a || b === null && a || b === '' && a || b != true){
 			i--;
 		}
-		
 	} 	
 });
 
-optionalExpensesBtn.addEventListener("click", function() {
-	for (let i = 0; i < optionalExpensesItem.length; i++) {
-		let answer = optionalExpensesItem[i].value;
+	/*    НЕОБЯЗАТЕЛЬНЫЕ РАСХОДЫ    */
 
-		if (answer == '') {
-			optionalExpensesBtn.disabled = true;
-		} else {
+optionalExpensesBtn.addEventListener("click", function(event) {
+	for (let i = 0; i < optionalExpensesItem.length; i++) {
+		let a = optionalExpensesItem[i].value, // Первый input 
+			b = optionalExpensesItem[1].value, // Второй input 
+			c = optionalExpensesItem[2].value; // Третий input 
+
+		if (a == '' || b == '' || c == '') {  // Проверка на заполнение строк
+			optionalExpensesBtn.disabled = true; 
+		} else if ((typeof(a)) === 'string' && a != '' && (typeof(a)) != null) { // Проверка на строку
 			optionalExpensesBtn.disabled = false;
-			appData.optionalExpenses[i] = answer;
-			optionalExpensesValue.textContent += appData.optionalExpenses[i] + ' ';
+			appData.optionalExpenses[i] = a; // Запись в формате 0: ".." 1: ".." 2: ".."
+			optionalExpensesValue.textContent += appData.optionalExpenses[i] + ' '; // Запись в объект optionalExpenses
+			console.log('Done');
+		} else {
+			event.disabled = true;
 		}
 	}
 });
 
-countBtn.addEventListener("click", function() {
+	/*    РАСЧЕТ ДНЕВНОГО БЮДЖЕТА    */
 
+countBtn.addEventListener("click", function() {
 	if (appData.budget != undefined) {
-		appData.moneyPerDay = ((sum - appData.budget) / 30).toFixed();
-		dayBudgetValue.textContent = appData.moneyPerDay;
+		appData.moneyPerDay = ((appData.budget - allSum) / 30).toFixed(); // Доход - Сумма / 30
+		dayBudgetValue.textContent = appData.moneyPerDay; // Запись в бюджет на 1 день
 
 		if (appData.moneyPerDay < 100) {
 			levelValue.textContent = "Минимальный уровень достатка";
@@ -103,23 +106,34 @@ countBtn.addEventListener("click", function() {
 			levelValue.textContent = "Произошла ошибка";
 		}
 	} else {
-		dayBudgetValue.textContent = "Произошла ошибка";
+		dayBudgetValue.textContent = "Начните расчет";
 	}
 });
 
-incomeItem.addEventListener("input", function() {
+	/*     СТАТЬИ ВОЗМОЖНОГО ДОХОДА    */
+
+incomeItem.addEventListener("input", function(event) {
 	let items = incomeItem.value;
-	appData.income = items.split(', ');
-	incomeValue.textContent = appData.income;
+
+	if (startBtn.disabled == true) {
+		appData.income = items.split(', ');
+		incomeValue.textContent = appData.income;  // Запись в доп.доход
+	} else {
+		event.preventDefault(); // Блокируем input
+	}
 });
+
+	/*     НАКОПЛЕНИЯ    */
 
 checkSavings.addEventListener("click", function() {
 	if (appData.savings == true) {
 		appData.savings = false;
 	} else {
 		appData.savings = true;
-	}
+	}	
 });
+
+	/*     СУММА     */
 
 sumValue.addEventListener("input", function() {
 	if (appData.savings == true) {
@@ -129,10 +143,12 @@ sumValue.addEventListener("input", function() {
 		appData.monthIncome = sum/100/12*percent;
 		appData.yearIncome = sum/100*percent;
 		
-		monthSavingsValue.textContent = appData.monthIncome.toFixed(1);
-		yearSavingsValue.textContent = appData.yearIncome.toFixed(1);
+		monthSavingsValue.textContent = appData.monthIncome.toFixed(1); // Накопления за 1 месяц 
+		yearSavingsValue.textContent = appData.yearIncome.toFixed(1); // Накопления за 1 год
 	}
 });
+
+	/*     ПРОЦЕНТЫ    */
 
 percentValue.addEventListener("input", function() {
 	if (appData.savings == true) {
@@ -142,8 +158,8 @@ percentValue.addEventListener("input", function() {
 		appData.monthIncome = sum/100/12*percent;
 		appData.yearIncome = sum/100*percent;
 		
-		monthSavingsValue.textContent = appData.monthIncome.toFixed(1);
-		yearSavingsValue.textContent = appData.yearIncome.toFixed(1);
+		monthSavingsValue.textContent = appData.monthIncome.toFixed(1); // Накопления за 1 месяц 
+		yearSavingsValue.textContent = appData.yearIncome.toFixed(1); // Накопления за 1 год
 	}
 });
 
