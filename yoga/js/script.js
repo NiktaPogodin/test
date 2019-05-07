@@ -42,7 +42,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
 
     // Timer
 
-    let deadLine = '2019-05-08',
+    let deadLine = '2018-05-08',
         now = Date.parse(new Date()), // Дата на компьютере
         over = Date.parse(deadLine); // Дата конца
 
@@ -101,5 +101,51 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
         }
 
         setClock('timer', deadLine);
+
+        
     }
+
+    // Modal
+
+    let more = document.querySelector('.more'),
+        overlay = document.querySelector('.overlay'),
+        close = document.querySelector('.popup-close');
+
+    more.addEventListener('click', function() {
+        overlay.style.display = 'block';            // При клике форма становится видимой 
+        this.classList.add('more-splash');          // Анимация
+        document.body.style.overflow = 'hidden';    // Запрещает прокрутку страницы
+    });
+
+    close.addEventListener('click', function() {
+        overlay.style.display = 'none';             // При клике на крестик форма становится невидимой
+        more.classList.remove('more-splash');       // Убирает анимацию с кнопки "Узнать больше"
+        document.body.style.overflow = '';
+    });
+    
+    // Modal[0]
+
+    let btn = document.getElementsByClassName('description-btn')[0],
+		information = document.getElementsByClassName('info')[0],
+        descriptionBtn = document.getElementsByClassName('description-btn');
+        
+    information.addEventListener('click', function(event) {
+        let target = event.target;  // Получаем исходный(конкретный) элемент на котором произошло событие
+
+        if (target.className == 'description-btn') {    // Проверка на нужные кнопки
+            let overlay = document.querySelector('.overlay'),
+                close = document.querySelector('.popup-close');
+            
+            overlay.style.display = 'block';            // При клике форма становится видимой 
+            this.classList.add('more-splash');          // Анимация
+            document.body.style.overflow = 'hidden';    // Запрещает прокрутку страницы
+    
+            close.addEventListener('click', function() {
+                overlay.style.display = 'none';         // При клике на крестик форма становится невидимой
+                more.classList.remove('more-splash');   // Убирает анимацию с кнопки
+                document.body.style.overflow = '';
+			});
+	    }
+    });
 });
+
