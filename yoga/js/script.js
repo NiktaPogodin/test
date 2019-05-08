@@ -47,10 +47,10 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
         over = Date.parse(deadLine); // Дата конца
 
     if (over <= now) {
-        let timer = document.querySelectorAll('.timer');
-        let hours = timer.querySelector('.hours');
-        let minutes = timer.querySelector('.minutes');
-        let seconds = timer.querySelector('.seconds');
+        let timer = document.getElementById('timer'),
+            hours = timer.querySelector('.hours'),
+            minutes = timer.querySelector('.minutes'),
+            seconds = timer.querySelector('.seconds');
 
         hours.textContent = "00";
         minutes.textContent = "00";
