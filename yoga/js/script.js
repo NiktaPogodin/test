@@ -27,7 +27,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
 
     /*    Обрабатывает событие, при клике на каждый из табов    */
 
-    info.addEventListener('click', function(event) {
+    info.addEventListener('click', (event) => {
         let target = event.target; 
         if (target && target.classList.contains('info-header-tab')) { // Сравнивает с тем куда кликаем
             for(let i = 0; tab.length; i++) {
@@ -117,7 +117,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
         document.body.style.overflow = 'hidden';    // Запрещает прокрутку страницы
     });
 
-    close.addEventListener('click', function() {
+    close.addEventListener('click', () => {
         overlay.style.display = 'none';             // При клике на крестик форма становится невидимой
         more.classList.remove('more-splash');       // Убирает анимацию с кнопки "Узнать больше"
         document.body.style.overflow = '';
@@ -140,7 +140,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
             this.classList.add('more-splash');          // Анимация
             document.body.style.overflow = 'hidden';    // Запрещает прокрутку страницы
     
-            close.addEventListener('click', function() {
+            close.addEventListener('click', () => {
                 overlay.style.display = 'none';         // При клике на крестик форма становится невидимой
                 more.classList.remove('more-splash');   // Убирает анимацию с кнопки
                 document.body.style.overflow = '';
