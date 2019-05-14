@@ -111,9 +111,9 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
         overlay = document.querySelector('.overlay'),
         close = document.querySelector('.popup-close');
 
-    more.addEventListener('click', function() {
+        more.addEventListener('click', () => {
         overlay.style.display = 'block';            // При клике форма становится видимой 
-        this.classList.add('more-splash');          // Анимация
+        more.classList.add('more-splash');          // Анимация
         document.body.style.overflow = 'hidden';    // Запрещает прокрутку страницы
     });
 
@@ -129,7 +129,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
 		information = document.getElementsByClassName('info')[0],
         descriptionBtn = document.getElementsByClassName('description-btn');
         
-    information.addEventListener('click', function(event) {
+    information.addEventListener('click', (event) => {
         let target = event.target;  // Получаем исходный(конкретный) элемент на котором произошло событие
 
         if (target.className == 'description-btn') {    // Проверка на нужные кнопки
@@ -137,7 +137,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
                 close = document.querySelector('.popup-close');
             
             overlay.style.display = 'block';            // При клике форма становится видимой 
-            this.classList.add('more-splash');          // Анимация
+            more.classList.add('more-splash');          // Анимация
             document.body.style.overflow = 'hidden';    // Запрещает прокрутку страницы
     
             close.addEventListener('click', () => {
