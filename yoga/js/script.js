@@ -149,27 +149,32 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
     });
 
     // Form
-    let imgLoader = document.createElement('img');
-    imgLoader.src = "img/loading.gif";
-    let imgSuccess = document.createElement('img');
-    imgSuccess.src = "img/succcess.png";
-    let imgFailure = document.createElement('img');
-    imgFailure.src = "img/failure.png";
+    // let imgLoader = document.createElement('img');
+    // imgLoader.src = "img/loading.gif";
+    // let imgSuccess = document.createElement('img');
+    // imgSuccess.src = "img/succcess.png";
+    // let imgFailure = document.createElement('img');
+    // imgFailure.src = "img/failure.png";
 
-    /*    Создаем div-ы и вставляем картинки    */
+    // let message = new Object();
+    // message.loading = document.createElement('div');
+    // message.loading.appendChild(imgLoader);
+    // message.failure = document.createElement('div');
+    // message.failure.appendChild(imgFailure);
+    // message.success = document.createElement('div');
+    // message.success.appendChild(imgSuccess);
 
-    let message = new Object();
-    message.loading = document.createElement('div'); 
-    message.loading.appendChild(imgLoader);
-    message.failure = document.createElement('div');
-    message.failure.appendChild(imgFailure);
-    message.success = document.createElement('div');
-    message.success.appendChild(imgSuccess);
+    let message = {
+        loading: 'Загрузка...',
+        success: 'Спасибо! Скоро мы с вами свяжемся!',
+        failure: 'Что-то пошло не так!',
+    };
   
     let form = document.querySelector('.main-form'),
         input = form.getElementsByTagName('input'),
         statusMessage = document.createElement('div');
-        
+
+        // statusMessage.classList.add('status');
 
         form.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -177,30 +182,39 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
             
             let request =  new XMLHttpRequest();
             request.open('POST', 'server.php');
-            request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+            request.setRequestHeader("Content-Type","application/json; charset=utf-8");
 
             let formData = new FormData(form);
 
-            request.send(formData);
+            let obj = {};
+            formData.forEach(function(value, key) {
+                obj[key] = value;
+            });
 
-            request.onreadystatechange = function() {
+            let json = JSON.stringify(obj);
+
+            request.send(json);
+
+            request.addEventListener('readystatechange', function() {
                 if (request.readyState < 4) {
-                    form.appendChild(message.loading);
-                } else if (request.readyState === 4) {
-                    if (request.status === 200 && request.status < 300) {
-                        message.loading.style.display = "none";
-                        form.appendChild(message.success);
+                    statusMessage.innerHTML = message.loading;
+                    // form.appendChild(message.loading);
+                } else if (request.readyState === 4 && request.status === 200) {
+                    if (request.status < 300) {
+                        statusMessage.innerHTML = message.success;
+                        // form.appendChild(message.success);
                     } else {
-                        form.appendChild(message.failure);
+                        statusMessage.innerHTML = message.failure;
+                        // form.appendChild(message.failure);
                     }
                 }
-            };
+            });
                 
             /*  Очищяем поля ввода  */
 
             for (let i = 0; i < input.length; i++) {
                 input[i].value = '';
             }
-        });
+    });  
 });
 
