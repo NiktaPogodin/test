@@ -111,7 +111,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
         overlay = document.querySelector('.overlay'),
         close = document.querySelector('.popup-close');
 
-        more.addEventListener('click', () => {
+    more.addEventListener('click', () => {
         overlay.style.display = 'block';            // При клике форма становится видимой 
         more.classList.add('more-splash');          // Анимация
         document.body.style.overflow = 'hidden';    // Запрещает прокрутку страницы
@@ -147,5 +147,60 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
 			});
 	    }
     });
+
+    // Form
+    let imgLoader = document.createElement('img');
+    imgLoader.src = "img/loading.gif";
+    let imgSuccess = document.createElement('img');
+    imgSuccess.src = "img/succcess.png";
+    let imgFailure = document.createElement('img');
+    imgFailure.src = "img/failure.png";
+
+    /*    Создаем div-ы и вставляем картинки    */
+
+    let message = new Object();
+    message.loading = document.createElement('div'); 
+    message.loading.appendChild(imgLoader);
+    message.failure = document.createElement('div');
+    message.failure.appendChild(imgFailure);
+    message.success = document.createElement('div');
+    message.success.appendChild(imgSuccess);
+  
+    let form = document.querySelector('.main-form'),
+        input = form.getElementsByTagName('input'),
+        statusMessage = document.createElement('div');
+        
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            form.appendChild(statusMessage);
+            
+            let request =  new XMLHttpRequest();
+            request.open('POST', 'server.php');
+            request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+
+            let formData = new FormData(form);
+
+            request.send(formData);
+
+            request.onreadystatechange = function() {
+                if (request.readyState < 4) {
+                    form.appendChild(message.loading);
+                } else if (request.readyState === 4) {
+                    if (request.status === 200 && request.status < 300) {
+                        message.loading.style.display = "none";
+                        form.appendChild(message.success);
+                    } else {
+                        form.appendChild(message.failure);
+                    }
+                }
+            };
+                
+            /*  Очищяем поля ввода  */
+
+            for (let i = 0; i < input.length; i++) {
+                input[i].value = '';
+            }
+        });
 });
 
