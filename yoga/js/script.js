@@ -282,6 +282,8 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
 
             // Если вводят символ в поле кол-во людей, обнуляем общую сумму
             if (persons.value.match(symbol)) {
+                persons.value = '';
+            } else if (restDays.value == ''){
                 totalValue.innerHTML = 0;
             } else {
                 totalValue.innerHTML = total;
@@ -294,6 +296,8 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
 
             // Если вводят символ в поле на сколько дней, обнуляем общую сумму
             if (restDays.value.match(symbol)) {
+                restDays.value = '';
+            } else if (persons.value == ''){
                 totalValue.innerHTML = 0;
             } else {
                 totalValue.innerHTML = total;
