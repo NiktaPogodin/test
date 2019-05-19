@@ -272,7 +272,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
         personsSum = 0,
         daysSum = 0,
         total = 0,
-        symbol = /[e\,\+\.]/ig;
+        symbol = /[\D]/ig;
 
         totalValue.innerHTML = 0; // Общая сумма 0
 
@@ -283,7 +283,9 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
             // Если вводят символ в поле кол-во людей, обнуляем общую сумму
             if (persons.value.match(symbol)) {
                 persons.value = '';
-            } else if (restDays.value == ''){
+            } else if (restDays.value == '') {
+                totalValue.innerHTML = 0;
+            } else if (persons.value == 0 || restDays.value == 0) {
                 totalValue.innerHTML = 0;
             } else {
                 totalValue.innerHTML = total;
@@ -297,7 +299,9 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
             // Если вводят символ в поле на сколько дней, обнуляем общую сумму
             if (restDays.value.match(symbol)) {
                 restDays.value = '';
-            } else if (persons.value == ''){
+            } else if (persons.value == '') {
+                totalValue.innerHTML = 0;
+            } else if (persons.value == 0 || restDays.value == 0) {
                 totalValue.innerHTML = 0;
             } else {
                 totalValue.innerHTML = total;
@@ -307,7 +311,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
         place.addEventListener('change', function() {
             if (restDays.value.match(symbol) || persons.value.match(symbol)) {
                 totalValue.innerHTML = 0;
-            } else { // число * зн-е options
+            } else {// число * зн-е options
                 let a = total;
                 totalValue.innerHTML = a * this.options[this.selectedIndex].value;
             }
