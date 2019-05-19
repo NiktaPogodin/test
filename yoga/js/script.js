@@ -159,9 +159,9 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
             statusMessage.classList.add('status');
             
         let message = {
-            loading: 'Загрузка...',
-            success: 'Спасибо! Скоро мы свяжемся с Вами!',
-            failure: 'Что-то пошло не так...'
+            loading: '<img src="src/img/loading.gif">',
+            success: '<img src="src/img/success.svg">',
+            failure: '<img src="src/img/failure.png">',
         };
 
         elem.addEventListener('submit', function(e) {
@@ -207,4 +207,105 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
     
     sendForm(form);
     sendForm(contactForm);
+
+    // Slider
+
+    let slideIndex = 1,                                     // Слайд, который показывается в текущий момент
+        slides = document.querySelectorAll('.slider-item'), // Слайды
+        prev = document.querySelector('.prev'),             // Стрелка навигации назад
+        next = document.querySelector('.next'),             // Стрелка навигации вперед
+        dotsWrap = document.querySelector('.slider-dots'),  // Оберка всех точек
+        dots = document.querySelectorAll('.dot');           // Все точки
+
+    showSlides(slideIndex);
+
+    /*    ф-я показа слайдов    */
+
+    function showSlides(n) {
+        // Если №слайда больше ко-ва слайдов, возвращяемся к 1-му
+        if (n > slides.length) {
+            slideIndex = 1;
+        }
+        // Если №слайда меньше ко-ва слайдов, возвращяемся к последнему
+        if (n < 1) {
+            slideIndex = slides.length;
+        }
+
+        slides.forEach((item) => item.style.display = 'none'); // Скрываем все слайды
+
+        dots.forEach((item) => item.classList.remove('dot-active')); // Со всех точек убираем class active
+
+        slides[slideIndex - 1]. style.display = 'block'; // Тот слайд, который хотим показать 
+        dots[slideIndex - 1].classList.add('dot-active'); // Точка, которую хотим показаться
+    }
+    // Ф-я увеличивающая параметр slideIndex 
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+    // Определяет текущий слайд, и устанавливает его
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+    // Шаг назад
+    prev.addEventListener('click', function() {
+        plusSlides(-1);
+    });
+    // Следующий слайд
+    next.addEventListener('click', function() {
+        plusSlides(1);
+    });
+    // Переход между слайдерами, при нажатии на точки
+    dotsWrap.addEventListener('click', function(event) {
+        for (let i = 0; i < dots.length + 1; i++) {
+            if (event.target.classList.contains('dot') && event.target == dots[i-1]) {
+                currentSlide(i);
+            }
+        }
+    });
+
+    // Calc
+
+    let persons = document.querySelectorAll('.counter-block-input')[0], // Кол-во людей
+        restDays = document.querySelectorAll('.counter-block-input')[1],// Кол-во дней
+        place = document.getElementById('select'),                      // Базы отдыха
+        totalValue = document.getElementById('total'),                  // Сумма поездки
+        personsSum = 0,
+        daysSum = 0,
+        total = 0,
+        symbol = /[e\,\+\.]/ig;
+
+        totalValue.innerHTML = 0; // Общая сумма 0
+
+        persons.addEventListener('change', function() {
+            personsSum = +this.value; // То что ввел пользователь
+            total = (daysSum + personsSum)*4000;
+
+            // Если вводят символ в поле кол-во людей, обнуляем общую сумму
+            if (persons.value.match(symbol)) {
+                totalValue.innerHTML = 0;
+            } else {
+                totalValue.innerHTML = total;
+            }
+        });
+
+        restDays.addEventListener('change', function() {
+            daysSum = +this.value;
+            total = (daysSum + personsSum)*4000;
+
+            // Если вводят символ в поле на сколько дней, обнуляем общую сумму
+            if (restDays.value.match(symbol)) {
+                totalValue.innerHTML = 0;
+            } else {
+                totalValue.innerHTML = total;
+            }
+        });
+
+        place.addEventListener('change', function() {
+            if (restDays.value.match(symbol) || persons.value.match(symbol)) {
+                totalValue.innerHTML = 0;
+            } else { // число * зн-е options
+                let a = total;
+                totalValue.innerHTML = a * this.options[this.selectedIndex].value;
+            }
+        });
 });
