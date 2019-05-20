@@ -311,9 +311,7 @@ window.addEventListener('DOMContentLoaded', function() { // Назначение
         place.addEventListener('change', function() {
             if (restDays.value.match(symbol) || persons.value.match(symbol)) {
                 totalValue.innerHTML = 0;
-            } else if (persons.value == 0 || restDays.value == 0) { // число * зн-е options
-                totalValue.innerHTML = 0;
-            } else {
+            } else { // число * зн-е options
                 let a = total;
                 totalValue.innerHTML = a * this.options[this.selectedIndex].value;
             }
