@@ -6,7 +6,8 @@ window.addEventListener('DOMContentLoaded', function() {
         slider = require('./parts/slider.js'),
         timer = require('./parts/timer.js'),
         modal = require('./parts/modal.js'),
-        calc = require('./parts/calc.js');
+        calc = require('./parts/calc.js'),
+        valid = require('./parts/valid.js');
 
     tab();
     form();
@@ -14,4 +15,5 @@ window.addEventListener('DOMContentLoaded', function() {
     timer();
     calc();
     modal();
+    valid();
 });

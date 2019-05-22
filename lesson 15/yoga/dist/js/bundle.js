@@ -471,6 +471,65 @@ module.exports = timer;
 
 /***/ }),
 
+/***/ "./src/js/parts/valid.js":
+/*!*******************************!*\
+  !*** ./src/js/parts/valid.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function valid() {
+    let setCursorPosition = (pos, elem) => {
+        elem.focus();
+    
+        if (elem.setSelectionRange) {
+            elem.setSelectionRange(pos, pos);
+        } else if (elem.createTextRange) {
+            let range = elem.createTextRange();
+    
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    };
+    
+    function Mask(event) {
+        let matrix = '+7(___) ___ __ __',
+            i = 0,
+            def = matrix.replace(/\D/g, ''),
+            val = this.value.replace(/\D/g, '');
+    
+        if (def.length >= val.length) {
+            val = def;
+        }
+    
+        this.value = matrix.replace(/./g, function(a) {
+            return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? '' : a;
+        });
+    
+        if (event.type == 'blur') {
+            if (this.value.length == 2) {
+                this.value = '';
+            }
+        } else {
+            setCursorPosition(this.value.length, this);
+        }
+    }
+        
+    let input = document.querySelectorAll('[type="tel"]');
+    
+    for (let i = 0; i < input.length; i++) {
+        input[i].addEventListener('input', Mask, false);
+        input[i].addEventListener('focus', Mask, false);
+        input[i].addEventListener('blur', Mask, false);
+    }
+}
+
+module.exports = valid;
+
+/***/ }),
+
 /***/ "./src/js/script.js":
 /*!**************************!*\
   !*** ./src/js/script.js ***!
@@ -486,7 +545,8 @@ window.addEventListener('DOMContentLoaded', function() {
         slider = __webpack_require__(/*! ./parts/slider.js */ "./src/js/parts/slider.js"),
         timer = __webpack_require__(/*! ./parts/timer.js */ "./src/js/parts/timer.js"),
         modal = __webpack_require__(/*! ./parts/modal.js */ "./src/js/parts/modal.js"),
-        calc = __webpack_require__(/*! ./parts/calc.js */ "./src/js/parts/calc.js");
+        calc = __webpack_require__(/*! ./parts/calc.js */ "./src/js/parts/calc.js"),
+        valid = __webpack_require__(/*! ./parts/valid.js */ "./src/js/parts/valid.js");
 
     tab();
     form();
@@ -494,6 +554,7 @@ window.addEventListener('DOMContentLoaded', function() {
     timer();
     calc();
     modal();
+    valid();
 });
 
 /***/ })
